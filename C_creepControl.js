@@ -1,11 +1,13 @@
 const { _actionChanger, _roleChanger } = require('./utils')
-const { upgraderActions } = require('./R_upgraderActions')
-const { builderActions } = require('./R_builderActions')
-const { setting } = require('./setting')
+const upgraderActions = require('./A_upgraderActions')
+const builderActions = require('./A_builderActions')
+const workerActions = require('./A_workerActions')
+const setting = require('./setting')
 
 const creepActions = {
     upgrader: upgraderActions,
     builder: builderActions,
+    worker: workerActions,
 }
 
 const creepControl = () => {
