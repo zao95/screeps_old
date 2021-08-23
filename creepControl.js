@@ -10,13 +10,9 @@ const creepActions = {
 
 const creepControl = () => {
     for (let creep of Object.values(Game.creeps)) {
-        const roles = setting.roles.map((role) => role.role)
-        if (!roles.includes(creep.memory.role)) _roleChanger(creep, setting.defaultRole)
-        const actions = setting.roles.find((role) => role.role === creep.memory.role).actions
-        const defaultAction = setting.roles.find(
-            (role) => role.role === creep.memory.role
-        ).defaultAction
-        if (!actions.includes(creep.memory.action)) _actionChanger(creep, defaultAction)
+        if (!(creep.memory.role in setting.roles)) _roleChanger(creep, setting.defaultRole)
+        if (!setting.roles[creep.memory.role].actions.includes(creep.memory.action))
+            _actionChanger(creep, setting.roles[creep.memory.role].defaultAction)
         else creepActions[creep.memory.role][creep.memory.action](creep)
     }
 }

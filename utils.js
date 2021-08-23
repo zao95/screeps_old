@@ -1,17 +1,28 @@
 const { setting } = require('./setting')
 
+const alertMessage = (message) => {
+    console.log(`! ${message}`)
+}
 const _roleChanger = (creep, role) => {
-    if (!setting.roles.find((value) => value.role === role))
-        console.log(`\n! 정의되지 않은 role로 변경을 시도했습니다.\nrole: ${role}`)
+    if (!(role in setting.roles))
+        alertMessage(
+            `정의되지 않은 role로 변경을 시도했습니다.\nAllowed role: ${Object.keys(
+                setting.roles
+            )}\nTried role: ${role}`
+        )
     else if (creep.memory) creep.memory.role = role
-    else console.log(`\n! 크립의 메모리가 없습니다.\ncreep: ${JSON.stringify(creep)}`)
+    else alertMessage(`\n크립의 메모리가 없습니다.\ncreep: ${JSON.stringify(creep)}`)
 }
 
 const _actionChanger = (creep, action) => {
-    if (!setting.roles.find((value) => value.role === creep.memory.role).actions.includes(action))
-        console.log(`\n! 정의되지 않은 action으로 변경을 시도했습니다.\naction: ${action}`)
+    if (!setting.roles[creep.memory.role].actions.includes(action))
+        alertMessage(
+            `정의되지 않은 action으로 변경을 시도했습니다.\nAllowed action: ${
+                setting.roles[creep.memory.role].actions
+            }\nTried action: ${action}`
+        )
     else if (creep.memory) creep.memory.action = action
-    else console.log(`\n! 크립의 메모리가 없습니다.\ncreep: ${JSON.stringify(creep)}`)
+    else alertMessage(`\n크립의 메모리가 없습니다.\ncreep: ${JSON.stringify(creep)}`)
 }
 
 const _interval = (func, time) => {
@@ -41,7 +52,7 @@ const _memoryUpdate = () => {
         if (Memory.rooms[room.name].sources === undefined) Memory.rooms[room.name].sources = {}
 
         // roles
-        for (let role of setting.roles) {
+        for (let role of Object.values(setting.roles)) {
             Memory.rooms[room.name].role[role] = Object.values(Game.creeps).filter(
                 (creep) => creep.memory.role === role
             ).length
