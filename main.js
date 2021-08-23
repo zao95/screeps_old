@@ -1,9 +1,9 @@
-const { _memoryUpdate, _garbageCollecter } = require('./utils')
+const { _interval, _memoryUpdate, _garbageCollecter } = require('./utils')
 const spawnControl = require('./spawnControl')
 const creepControl = require('./creepControl')
 
 module.exports.loop = function () {
-    _memoryUpdate()
+    _interval(_memoryUpdate, 1)
     spawnControl()
     creepControl()
     _garbageCollecter()

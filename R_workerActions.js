@@ -1,6 +1,6 @@
 const { _actionChanger, _findCloseSource, _interval } = require('./utils')
 
-module.exports.harvesterAction = {
+module.exports.workerActions = {
     harvest: (creep) => {
         creep.store.getFreeCapacity() === 0 && _actionChanger(creep, 'upgrade')
 
@@ -12,6 +12,9 @@ module.exports.harvesterAction = {
         } else if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
             creep.moveTo(source)
         }
+    },
+    transfer: (creep) => {
+        const target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES)
     },
     wait: (creep) => {
         creep.moveTo(Game.flags.waitingFlag)

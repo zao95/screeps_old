@@ -1,40 +1,24 @@
+const { setting } = require('./setting')
+
 const _roleChanger = (creep, role) => {
-    const roleChangeFunc = {
-        harvester: () => {
-            creep.memory.role = 'harvester'
-        },
-        upgrader: () => {
-            creep.memory.role = 'upgrader'
-        },
-        waiter: () => {
-            creep.memory.role = 'waiter'
-        },
-    }
-    roleChangeFunc[role]()
+    if (!setting.roles.find((value) => value.role === role))
+        console.log(`\n! 정의되지 않은 role로 변경을 시도했습니다.\nrole: ${role}`)
+    else if (creep.memory) creep.memory.role = role
+    else console.log(`\n! 크립의 메모리가 없습니다.\ncreep: ${JSON.stringify(creep)}`)
 }
-module.exports._roleChanger = _roleChanger
 
 const _actionChanger = (creep, action) => {
-    const actionChangeFunc = {
-        harvest: () => {
-            creep.memory.action = 'harvest'
-        },
-        upgrade: () => {
-            creep.memory.action = 'upgrade'
-        },
-        wait: () => {
-            creep.memory.action = 'wait'
-        },
-    }
-    creep.memory && actionChangeFunc[action]()
+    if (!setting.roles.find((value) => value.role === creep.memory.role).actions.includes(action))
+        console.log(`\n! 정의되지 않은 action으로 변경을 시도했습니다.\naction: ${action}`)
+    else if (creep.memory) creep.memory.action = action
+    else console.log(`\n! 크립의 메모리가 없습니다.\ncreep: ${JSON.stringify(creep)}`)
 }
-module.exports._actionChanger = _actionChanger
 
-module.exports._interval = (func, time) => {
+const _interval = (func, time) => {
     Game.time % time === 0 && func()
 }
 
-module.exports._findCloseSource = (creep) => {
+const _findCloseSource = (creep) => {
     const sources = Object.values(Memory.rooms[creep.room.name].sources)
         .filter((source) => source._energy)
         .sort((a, b) => b.availableHarvest - b.targets - (a.availableHarvest - a.targets))
@@ -46,14 +30,24 @@ module.exports._findCloseSource = (creep) => {
     }
 }
 
-module.exports._memoryUpdate = () => {
+const _memoryUpdate = () => {
+    if (Memory.rooms === undefined) Memory.rooms = {}
+
     for (let room of Object.values(Game.rooms)) {
         const sources = Game.rooms[room.name].find(FIND_SOURCES)
 
-        if (Memory.rooms === undefined) Memory.rooms = {}
         if (Memory.rooms[room.name] === undefined) Memory.rooms[room.name] = {}
+        if (Memory.rooms[room.name].role === undefined) Memory.rooms[room.name].role = {}
         if (Memory.rooms[room.name].sources === undefined) Memory.rooms[room.name].sources = {}
 
+        // roles
+        for (let role of setting.roles) {
+            Memory.rooms[room.name].role[role] = Object.values(Game.creeps).filter(
+                (creep) => creep.memory.role === role
+            ).length
+        }
+
+        // sources
         for (let source of Object.values(sources)) {
             const availableHarvest = room
                 .lookAtArea(
@@ -77,10 +71,19 @@ module.exports._memoryUpdate = () => {
     }
 }
 
-module.exports._garbageCollecter = () => {
+const _garbageCollecter = () => {
     for (const name in Memory.creeps) {
         if (!(name in Game.creeps)) {
             delete Memory.creeps[name]
         }
     }
+}
+
+module.exports = {
+    _roleChanger: _roleChanger,
+    _actionChanger: _actionChanger,
+    _interval: _interval,
+    _findCloseSource: _findCloseSource,
+    _memoryUpdate: _memoryUpdate,
+    _garbageCollecter: _garbageCollecter,
 }
