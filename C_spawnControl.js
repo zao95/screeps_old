@@ -1,16 +1,17 @@
+const setting = require('./setting')
+
 const born = (spawn) => {
-    const maxNaming = Math.max(
-        ...Object.values(Game.creeps)
-            .map((creep) => +creep.name.replace('Worker', ''))
-            .filter((name) => !isNaN(name))
-    )
-    spawn.spawnCreep([WORK, CARRY, MOVE], `Worker${maxNaming + 1}`)
+    const creepNames = Object.values(Game.creeps)
+        .map((creep) => creep.name.replace(setting.creepName, ''))
+        .filter((name) => !isNaN(name))
+    const maxNaming = creepNames.length ? Math.max(...creepNames) : 0
+    spawn.spawnCreep([WORK, CARRY, MOVE], `${setting.creepName}${maxNaming + 1}`)
 }
 
 const spawnControl = () => {
     for (let spawn of Object.values(Game.spawns)) {
-        const creeps = Object.keys(Memory.creeps)
-        if (spawn.store[RESOURCE_ENERGY] === 300 && creeps.length < 12) {
+        const creepCount = Memory.creeps ? Object.keys(Memory.creeps).length : 0
+        if (spawn.store[RESOURCE_ENERGY] === 300 && creepCount < 12) {
             born(spawn)
         }
     }

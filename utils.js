@@ -34,13 +34,13 @@ const _interval = (func, time) => {
 }
 
 const _dashBoard = () => {
-    _infoMessage('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+    _infoMessage('\n')
     _infoMessage('====================')
     for (let room in Memory.rooms) {
         _infoMessage(`${room} 현황\n${JSON.stringify(Memory.rooms[room].role)}`)
     }
     _infoMessage('====================')
-    _infoMessage('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+    _infoMessage('\n')
 }
 
 const _findCloseSource = (creep) => {
@@ -74,48 +74,6 @@ const _findCloseStorage = (creep) => {
     }
 }
 
-const _memoryUpdate = () => {
-    if (Memory.rooms === undefined) Memory.rooms = {}
-
-    for (let room of Object.values(Game.rooms)) {
-        const sources = Game.rooms[room.name].find(FIND_SOURCES)
-
-        if (Memory.rooms[room.name] === undefined) Memory.rooms[room.name] = {}
-        if (Memory.rooms[room.name].role === undefined) Memory.rooms[room.name].role = {}
-        if (Memory.rooms[room.name].sources === undefined) Memory.rooms[room.name].sources = {}
-
-        // roles
-        for (let { role } of Object.values(setting.roles)) {
-            const count = Object.values(Game.creeps).filter(
-                (creep) => creep.memory.role === role
-            ).length
-            Memory.rooms[room.name].role[role] = count
-        }
-
-        // sources
-        for (let source of Object.values(sources)) {
-            const availableHarvest = room
-                .lookAtArea(
-                    source.pos.y - 1,
-                    source.pos.x - 1,
-                    source.pos.y + 1,
-                    source.pos.x + 1,
-                    true
-                )
-                .filter((object) => object.type === 'terrain' && object.terrain != 'wall').length
-            const targets = Object.values(Memory.creeps).filter(
-                (creep) => creep.target === source.id
-            ).length
-
-            Memory.rooms[room.name].sources[source.id] = {
-                ...source,
-                availableHarvest,
-                targets,
-            }
-        }
-    }
-}
-
 const _garbageCollecter = () => {
     for (const name in Memory.creeps) {
         if (!(name in Game.creeps)) {
@@ -133,6 +91,5 @@ module.exports = {
     _dashBoard: _dashBoard,
     _findCloseSource: _findCloseSource,
     _findCloseStorage: _findCloseStorage,
-    _memoryUpdate: _memoryUpdate,
     _garbageCollecter: _garbageCollecter,
 }

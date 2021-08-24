@@ -23,7 +23,10 @@ const workerActions = {
     },
     wait: (creep) => {
         creep.moveTo(Game.flags.waitingFlag)
-        _interval(() => _findCloseSource(creep), 10)
+        _interval(() => {
+            _findCloseStorage(creep) && _actionChanger(creep, 'transfer')
+            _findCloseSource(creep)
+        }, 10)
     },
 }
 

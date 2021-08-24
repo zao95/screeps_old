@@ -1,5 +1,6 @@
 const setting = {
-    defaultRole: 'upgrader',
+    creepName: 'creep',
+    defaultRole: 'worker',
     roles: {
         worker: {
             role: 'worker',
@@ -15,7 +16,7 @@ const setting = {
         },
         builder: {
             role: 'builder',
-            ratio: 1,
+            ratio: 4,
             defaultAction: 'harvest',
             actions: ['harvest', 'build', 'wait'],
         },
