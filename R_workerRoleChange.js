@@ -20,7 +20,7 @@ const workerRoleChange = () => {
 
         // role별 creep * 가중치 계산 및 예외계산
         for (let role in setting.roles) {
-            roles[role] = Math.floor(Memory.rooms[room].role[role] / setting.roles[role].ratio)
+            roles[role] = Memory.rooms[room].role[role] / setting.roles[role].ratio
             if (role === 'builder' && !hasConstructionSite && roles[role] != 0)
                 roles[role] = Math.min()
             if (role === 'worker') {

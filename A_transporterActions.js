@@ -1,3 +1,5 @@
+// workerActions 참조해서 많은 수정 필요
+
 const {
     _actionChanger,
     _actionChangeByCanHarvest,
@@ -6,7 +8,7 @@ const {
 } = require('./utils')
 
 const transporterActions = {
-    pickup: (creep) => {
+    withdraw: (creep) => {
         creep.store.getFreeCapacity() === 0 && _actionChanger(creep, 'transfer')
 
         const cachedSource = creep.room

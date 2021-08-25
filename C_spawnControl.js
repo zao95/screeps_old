@@ -2,12 +2,13 @@ const setting = require('./setting')
 const { _makeBody } = require('./utils')
 
 const spawnWorker = (spawn, energy) => {
+    const defaultName = 'Worker'
     const creepNames = Object.values(Game.creeps)
-        .map((creep) => creep.name.replace('Worker', ''))
+        .map((creep) => creep.name.replace(defaultName, ''))
         .filter((name) => !isNaN(name))
     const maxNaming = creepNames.length ? Math.max(...creepNames) : 0
 
-    const name = `'Worker'${maxNaming + 1}`
+    const name = `${defaultName}${maxNaming + 1}`
     const body = _makeBody(energy, 'worker')
     const memory = { role: 'worker' }
     spawn.spawnCreep(body, name, { memory })

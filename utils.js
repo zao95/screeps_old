@@ -61,22 +61,14 @@ const _actionChangeByCanHarvest = (creep) => {
     }
 }
 
-const _findCloseStorage = (creep) => {
-    const extension = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+const _findCloseStorage = (creep, targetTypes) => {
+    let minimumFreeCapacity = targetTypes.includes('tower') ? 500 : 0
+    let target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: (obj) =>
-            obj.structureType === 'extension' && obj.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
+            targetTypes.includes(obj.structureType) &&
+            obj.store.getFreeCapacity(RESOURCE_ENERGY) > minimumFreeCapacity,
     })
-    if (extension) {
-        creep.memory.target = extension.id
-        return extension
-    }
-    const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS, {
-        filter: (obj) => obj.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
-    })
-    if (spawn) {
-        creep.memory.target = spawn.id
-        return spawn
-    }
+    return target
 }
 
 const _garbageCollecter = () => {
@@ -116,6 +108,16 @@ const _makeBody = (energyCapacityAvailable, purpose) => {
     return body
 }
 
+const _transfer = (creep, targetTypes) => {
+    let target = _findCloseStorage(creep, targetTypes)
+    if (target) {
+        creep.memory.target = target.id
+        creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE && creep.moveTo(target)
+        return true
+    }
+    return false
+}
+
 module.exports = {
     _alertMessage: _alertMessage,
     _infoMessage: _infoMessage,
@@ -128,4 +130,5 @@ module.exports = {
     _findCloseStorage: _findCloseStorage,
     _garbageCollecter: _garbageCollecter,
     _makeBody: _makeBody,
+    _transfer: _transfer,
 }

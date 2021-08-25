@@ -3,20 +3,10 @@ const {
     _actionChangeByCanHarvest,
     _interval,
     _findCloseStorage,
+    _transfer,
 } = require('./utils')
+const setting = require('./setting')
 
-const transfer = (creep, targetType) => {
-    const target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-        filter: (obj) =>
-            targetType.includes(obj.structureType) &&
-            obj.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
-    })
-    if (target) {
-        creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE && creep.moveTo(target)
-        return true
-    }
-    return false
-}
 const workerActions = {
     harvest: (creep) => {
         creep.store.getFreeCapacity() === 0 && _actionChanger(creep, 'transfer')
@@ -31,17 +21,25 @@ const workerActions = {
     transfer: (creep) => {
         creep.store[RESOURCE_ENERGY] === 0 && _actionChanger(creep, 'harvest')
 
-        transfer(creep, ['container', 'storage']) ||
-            transfer(creep, ['tower']) ||
-            transfer(creep, ['extension', 'spawn']) ||
+        const cachedTarget = creep.room
+            .find(FIND_STRUCTURES)
+            .find((structure) => structure.id === creep.memory.target)
+        if (cachedTarget != undefined)
+            if (creep.transfer(cachedTarget) == ERR_NOT_IN_RANGE) creep.moveTo(cachedTarget)
+
+        _transfer(creep, ['container', 'storage']) ||
+            _transfer(creep, ['tower']) ||
+            _transfer(creep, ['extension', 'spawn']) ||
             _actionChanger(creep, 'wait')
     },
     wait: (creep) => {
         creep.moveTo(Game.flags.waitingFlag)
         _interval(() => {
-            _findCloseStorage(creep) && _actionChanger(creep, 'transfer')
+            // _findCloseStorage(creep, ['container', 'storage']) ||
+            _findCloseStorage(creep, ['container', 'storage', 'tower', 'extension', 'spawn']) ||
+                _actionChanger(creep, 'transfer')
             _actionChangeByCanHarvest(creep)
-        }, 10)
+        }, setting.waitCreepIntervalCalcTime)
     },
 }
 

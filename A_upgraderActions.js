@@ -1,4 +1,5 @@
 const { _interval, _actionChangeByCanHarvest, _actionChanger } = require('./utils')
+const setting = require('./setting')
 
 const upgraderActions = {
     harvest: (creep) => {
@@ -19,7 +20,7 @@ const upgraderActions = {
     },
     wait: (creep) => {
         creep.moveTo(Game.flags.waitingFlag)
-        _interval(() => _actionChangeByCanHarvest(creep), 10)
+        _interval(() => _actionChangeByCanHarvest(creep), setting.waitCreepIntervalCalcTime)
     },
 }
 
