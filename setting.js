@@ -1,6 +1,5 @@
 const setting = {
     defaultRole: 'worker',
-    maxCreeps: 12,
     roles: {
         worker: {
             role: 'worker',
