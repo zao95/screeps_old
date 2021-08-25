@@ -11,7 +11,9 @@ const creepActions = {
 }
 
 const creepControl = () => {
-    for (let creep of Object.values(Game.creeps)) {
+    const creeps = Object.values(Game.creeps)
+    const workers = creeps.filter((creep) => creep.name.startsWith('Worker'))
+    for (let creep of workers) {
         if (!(creep.memory.role in setting.roles)) _roleChanger(creep, setting.defaultRole)
         if (!setting.roles[creep.memory.role].actions.includes(creep.memory.action))
             _actionChanger(creep, setting.roles[creep.memory.role].defaultAction)

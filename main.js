@@ -12,7 +12,7 @@ module.exports.loop = () => {
     creepControl()
     towerControl()
     _garbageCollecter()
-    _interval(_dashBoard, 20)
+    _interval(_dashBoard, 1)
 }
 
 // const creep = Object.values(Game.creeps)[0]

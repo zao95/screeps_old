@@ -43,11 +43,32 @@ const _interval = (func, time) => {
     Game.time % time === 0 && func()
 }
 
+const _maxWorkerCreeps = (room) => {
+    const sources = Memory.rooms[room.name].sources
+    const availableHarvest = Object.values(sources).reduce(
+        (prev, curr) => prev + curr.availableHarvest,
+        0
+    )
+    const maxWorkerCreeps =
+        room.energyCapacityAvailable > 700
+            ? Math.ceil(
+                  availableHarvest *
+                      (room.energyCapacityAvailable / room.energyCapacityAvailable ** 1.05)
+              )
+            : 30
+    return maxWorkerCreeps
+}
+
 const _dashBoard = () => {
     let message = ''
     message += '\n===================='
     for (let room in Memory.rooms) {
-        message += `\n${room} 현황\n${JSON.stringify(Memory.rooms[room].role)}`
+        const creeps = Game.rooms[room].find(FIND_MY_CREEPS, {
+            filter: (creep) => creep.name.startsWith('Worker'),
+        })
+        message += `\n[${room} 현황]`
+        message += `\nCreeps: \t${creeps.length} / ${_maxWorkerCreeps(Game.rooms[room])}`
+        message += `\nRole 배분: \t${JSON.stringify(Memory.rooms[room].role)}`
     }
     message += '\n====================\n'
     _infoMessage(message)
@@ -74,16 +95,6 @@ const _actionChangeByCanHarvest = (creep) => {
 const _findCloseStorage = (creep, targetTypes) => {
     let minimumFreeCapacity = targetTypes.includes('tower') ? 500 : 0
     let target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: (obj) =>
-            targetTypes.includes(obj.structureType) &&
-            obj.store.getFreeCapacity(RESOURCE_ENERGY) > minimumFreeCapacity,
-    })
-    return target
-}
-
-const _findStorages = (room, targetTypes) => {
-    let minimumFreeCapacity = targetTypes.includes('tower') ? 500 : 0
-    let target = room.find(FIND_STRUCTURES, {
         filter: (obj) =>
             targetTypes.includes(obj.structureType) &&
             obj.store.getFreeCapacity(RESOURCE_ENERGY) > minimumFreeCapacity,
@@ -144,6 +155,7 @@ module.exports = {
     _roleChanger: _roleChanger,
     _actionChanger: _actionChanger,
     _interval: _interval,
+    _maxWorkerCreeps: _maxWorkerCreeps,
     _dashBoard: _dashBoard,
     _findCloseSource: _findCloseSource,
     _actionChangeByCanHarvest: _actionChangeByCanHarvest,

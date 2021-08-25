@@ -1,5 +1,4 @@
-const setting = require('./setting')
-const { _makeBody } = require('./utils')
+const { _makeBody, _maxWorkerCreeps } = require('./utils')
 
 const spawnWorker = (spawn, energy) => {
     const defaultName = 'Worker'
@@ -17,18 +16,7 @@ const spawnWorker = (spawn, energy) => {
 const spawnControl = () => {
     for (let spawn of Object.values(Game.spawns)) {
         const creepCount = Memory.creeps ? Object.keys(Memory.creeps).length : 0
-        const availableHarvest = Object.values(Memory.rooms[spawn.room.name].sources).reduce(
-            (prev, curr) => prev + curr.availableHarvest,
-            0
-        )
-        const maxWorkerCreeps =
-            spawn.room.energyCapacityAvailable > 700
-                ? Math.ceil(
-                      availableHarvest *
-                          (spawn.room.energyCapacityAvailable /
-                              spawn.room.energyCapacityAvailable ** 1.05)
-                  )
-                : 30
+        const maxWorkerCreeps = _maxWorkerCreeps(spawn.room)
         if (
             spawn.room.energyAvailable === spawn.room.energyCapacityAvailable &&
             creepCount < maxWorkerCreeps
