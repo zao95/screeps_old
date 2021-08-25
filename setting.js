@@ -3,7 +3,7 @@ const setting = {
     roles: {
         worker: {
             role: 'worker',
-            ratio: 2,
+            ratio: 5,
             defaultAction: 'harvest',
             actions: ['harvest', 'transfer', 'wait'],
         },
@@ -15,7 +15,7 @@ const setting = {
         },
         builder: {
             role: 'builder',
-            ratio: 3,
+            ratio: 2,
             defaultAction: 'harvest',
             actions: ['harvest', 'build', 'wait'],
         },

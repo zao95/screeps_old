@@ -42,18 +42,21 @@ const workerActions = {
     wait: (creep) => {
         creep.moveTo(Game.flags.waitingFlag)
         _interval(() => {
-            // _findCloseStorage(creep, ['container', 'storage']) ||
-            const transporters = creep.room
-                .find(FIND_MY_CREEPS)
-                .filter((creep) => creep.memory.role === 'transporter')
-            if (transporters.length) {
-                _findCloseStorage(creep, ['container', 'storage'])
-                    ? _actionChanger(creep, 'transfer')
-                    : _actionChangeByCanHarvest(creep)
+            if (creep.store.getCapacity() != 0) {
+                const transporters = creep.room
+                    .find(FIND_MY_CREEPS)
+                    .filter((creep) => creep.memory.role === 'transporter')
+                if (transporters.length) {
+                    _findCloseStorage(creep, ['container', 'storage'])
+                        ? _actionChanger(creep, 'transfer')
+                        : _actionChangeByCanHarvest(creep)
+                } else {
+                    _findCloseStorage(creep, ['container', 'storage', 'extension', 'spawn'])
+                        ? _actionChanger(creep, 'transfer')
+                        : _actionChangeByCanHarvest(creep)
+                }
             } else {
-                _findCloseStorage(creep, ['container', 'storage', 'extension', 'spawn'])
-                    ? _actionChanger(creep, 'transfer')
-                    : _actionChangeByCanHarvest(creep)
+                _actionChangeByCanHarvest(creep)
             }
         }, setting.waitCreepIntervalCalcTime)
     },
