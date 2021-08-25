@@ -1,46 +1,47 @@
 const setting = require('./setting')
 
-const roleChange = () => {
+const workerRoleChange = () => {
     for (let room of Object.keys(Memory.rooms)) {
         // 가중치 계산
-        const hasConstructionSite = Game.rooms[room].find(FIND_MY_CONSTRUCTION_SITES).length
-        const hasStorage = Game.rooms[room].find(FIND_MY_STRUCTURES, {
+        const hasConstructionSite = Game.rooms[room].find(FIND_CONSTRUCTION_SITES).length
+        const hasStorage = Game.rooms[room].find(FIND_STRUCTURES, {
             filter: (obj) =>
-                obj.structureType === 'extension' && obj.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
+                ['container', 'storage', 'extension', 'spawn', 'tower'].includes(
+                    obj.structureType
+                ) && obj.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
         })
+
+        // 변수 선언
         const roles = {}
         let maxRole
         let minRole
         let maxValue = Math.max()
         let minValue = Math.min()
 
+        // role별 creep * 가중치 계산 및 예외계산
         for (let role in setting.roles) {
             roles[role] = Math.floor(Memory.rooms[room].role[role] / setting.roles[role].ratio)
             if (role === 'builder' && !hasConstructionSite && roles[role] != 0)
                 roles[role] = Math.min()
+            if (role === 'worker') {
+                if (!hasStorage.length) roles[role] = Math.min()
+                else if (roles[role] === 0) roles[role] = Math.max()
+            }
         }
+
+        // 최대 role, 최소 role 계산
         for (let role in roles) {
-            // if (role === 'builder') {
-            //     console.log()
-            //     console.log(role)
-            //     console.log(roles[role])
-            //     console.log('roles[role] > maxValue', roles[role] > maxValue)
-            // }
             if (roles[role] > maxValue) {
                 maxValue = roles[role]
                 maxRole = role
             }
             if (roles[role] < minValue) {
                 if (role === 'builder' && !hasConstructionSite) continue
+                if (role === 'worker' && !hasStorage.length) continue
                 minValue = roles[role]
                 minRole = role
             }
         }
-        // console.log()
-        // console.log('maxValue', maxValue)
-        // console.log('minValue', minValue)
-        // console.log('minRole', minRole)
-        // console.log('minValue', minValue)
 
         // 변경 로직
         if (maxValue - minValue > 1) {
@@ -51,4 +52,4 @@ const roleChange = () => {
     }
 }
 
-module.exports = roleChange
+module.exports = workerRoleChange

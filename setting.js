@@ -1,6 +1,6 @@
 const setting = {
-    creepName: 'creep',
     defaultRole: 'worker',
+    maxCreeps: 12,
     roles: {
         worker: {
             role: 'worker',
@@ -10,13 +10,13 @@ const setting = {
         },
         upgrader: {
             role: 'upgrader',
-            ratio: 2,
+            ratio: 1,
             defaultAction: 'harvest',
             actions: ['harvest', 'upgrade', 'wait'],
         },
         builder: {
             role: 'builder',
-            ratio: 4,
+            ratio: 2,
             defaultAction: 'harvest',
             actions: ['harvest', 'build', 'wait'],
         },

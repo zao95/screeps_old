@@ -34,20 +34,25 @@ const _interval = (func, time) => {
 }
 
 const _dashBoard = () => {
-    _infoMessage('\n')
-    _infoMessage('====================')
+    let message = ''
+    message += '\n===================='
     for (let room in Memory.rooms) {
-        _infoMessage(`${room} 현황\n${JSON.stringify(Memory.rooms[room].role)}`)
+        message += `\n${room} 현황\n${JSON.stringify(Memory.rooms[room].role)}`
     }
-    _infoMessage('====================')
-    _infoMessage('\n')
+    message += '\n====================\n'
+    _infoMessage(message)
 }
 
 const _findCloseSource = (creep) => {
     const sources = Object.values(Memory.rooms[creep.room.name].sources)
         .filter((source) => source._energy)
         .filter((source) => source.targets - source.availableHarvest < 0)
-        .sort((a, b) => b.availableHarvest - b.targets - (a.availableHarvest - a.targets))
+        .sort((a, b) => creep.pos.getRangeTo(a) - creep.pos.getRangeTo(b))
+    return sources
+}
+
+const _actionChangeByCanHarvest = (creep) => {
+    const sources = _findCloseSource(creep)
     if (sources.length) {
         _actionChanger(creep, 'harvest')
         creep.memory.target = sources[0].id
@@ -57,20 +62,20 @@ const _findCloseSource = (creep) => {
 }
 
 const _findCloseStorage = (creep) => {
-    const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS, {
-        filter: (obj) => obj.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
-    })
-    if (spawn) {
-        creep.memory.target = spawn.id
-        return spawn
-    }
-    const extension = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+    const extension = creep.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: (obj) =>
             obj.structureType === 'extension' && obj.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
     })
     if (extension) {
         creep.memory.target = extension.id
         return extension
+    }
+    const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS, {
+        filter: (obj) => obj.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
+    })
+    if (spawn) {
+        creep.memory.target = spawn.id
+        return spawn
     }
 }
 
@@ -82,6 +87,35 @@ const _garbageCollecter = () => {
     }
 }
 
+const _makeBody = (energyCapacityAvailable, purpose) => {
+    const body = []
+    let pricing = 0
+    let index = 0
+
+    const bodyCost = {
+        tough: 10,
+        move: 50,
+        work: 100,
+        carry: 50,
+        attack: 80,
+        ranged_attack: 150,
+        heal: 250,
+    }
+
+    const bodyByPurpose = {
+        worker: ['move', 'work', 'carry'],
+    }
+
+    while (pricing <= energyCapacityAvailable && body.length < 50) {
+        if (index === bodyByPurpose[purpose].length) index = 0
+        pricing += bodyCost[bodyByPurpose[purpose][index]]
+        body.push(bodyByPurpose[purpose][index++])
+    }
+
+    body.pop()
+    return body
+}
+
 module.exports = {
     _alertMessage: _alertMessage,
     _infoMessage: _infoMessage,
@@ -90,6 +124,8 @@ module.exports = {
     _interval: _interval,
     _dashBoard: _dashBoard,
     _findCloseSource: _findCloseSource,
+    _actionChangeByCanHarvest: _actionChangeByCanHarvest,
     _findCloseStorage: _findCloseStorage,
     _garbageCollecter: _garbageCollecter,
+    _makeBody: _makeBody,
 }

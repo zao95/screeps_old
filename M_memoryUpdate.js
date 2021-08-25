@@ -10,7 +10,7 @@ const memoryUpdate = () => {
         if (Memory.rooms[room.name].role === undefined) Memory.rooms[room.name].role = {}
         if (Memory.rooms[room.name].sources === undefined) Memory.rooms[room.name].sources = {}
 
-        // roles
+        // Roles
         for (let { role } of Object.values(setting.roles)) {
             const count = Object.values(Game.creeps).filter(
                 (creep) => creep.memory.role === role
@@ -18,7 +18,7 @@ const memoryUpdate = () => {
             Memory.rooms[room.name].role[role] = count
         }
 
-        // sources
+        // Sources
         for (let source of Object.values(sources)) {
             const availableHarvest = room
                 .lookAtArea(
