@@ -21,7 +21,7 @@ const setting = {
             actions: ['harvest', 'build', 'wait'],
         },
     },
-    waitCreepIntervalCalcTime: 5,
+    waitCreepIntervalCalcTime: 3,
     actions: ['harvest', 'upgrade', 'build', 'transfer', 'wait'],
 }
 

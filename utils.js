@@ -8,25 +8,35 @@ const _infoMessage = (message) => {
 }
 
 const _roleChanger = (creep, role) => {
-    if (!(role in setting.roles))
+    if (!(role in setting.roles)) {
         _alertMessage(
             `정의되지 않은 role로 변경을 시도했습니다.\nAllowed role: ${Object.keys(
                 setting.roles
             )}\nTried role: ${creep.memory.role}, action: ${action}`
         )
-    else if (creep.memory) creep.memory.role = role
-    else _alertMessage(`\n크립의 메모리가 없습니다.\ncreep: ${JSON.stringify(creep)}`)
+        return false
+    } else if (creep.memory) {
+        creep.memory.role = role
+        return true
+    }
+    _alertMessage(`\n크립의 메모리가 없습니다.\ncreep: ${JSON.stringify(creep)}`)
+    return false
 }
 
 const _actionChanger = (creep, action) => {
-    if (!setting.roles[creep.memory.role].actions.includes(action))
+    if (!setting.roles[creep.memory.role].actions.includes(action)) {
         _alertMessage(
             `정의되지 않은 action으로 변경을 시도했습니다.\nAllowed action: ${
                 setting.roles[creep.memory.role].actions
             }\nTried role: ${creep.memory.role}, action: ${action}`
         )
-    else if (creep.memory) creep.memory.action = action
-    else _alertMessage(`\n크립의 메모리가 없습니다.\ncreep: ${JSON.stringify(creep)}`)
+        return false
+    } else if (creep.memory) {
+        creep.memory.action = action
+        return true
+    }
+    _alertMessage(`\n크립의 메모리가 없습니다.\ncreep: ${JSON.stringify(creep)}`)
+    return false
 }
 
 const _interval = (func, time) => {
@@ -64,6 +74,16 @@ const _actionChangeByCanHarvest = (creep) => {
 const _findCloseStorage = (creep, targetTypes) => {
     let minimumFreeCapacity = targetTypes.includes('tower') ? 500 : 0
     let target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        filter: (obj) =>
+            targetTypes.includes(obj.structureType) &&
+            obj.store.getFreeCapacity(RESOURCE_ENERGY) > minimumFreeCapacity,
+    })
+    return target
+}
+
+const _findStorages = (room, targetTypes) => {
+    let minimumFreeCapacity = targetTypes.includes('tower') ? 500 : 0
+    let target = room.find(FIND_STRUCTURES, {
         filter: (obj) =>
             targetTypes.includes(obj.structureType) &&
             obj.store.getFreeCapacity(RESOURCE_ENERGY) > minimumFreeCapacity,

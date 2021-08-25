@@ -27,18 +27,34 @@ const workerActions = {
         if (cachedTarget != undefined)
             if (creep.transfer(cachedTarget) == ERR_NOT_IN_RANGE) creep.moveTo(cachedTarget)
 
-        _transfer(creep, ['container', 'storage']) ||
-            _transfer(creep, ['tower']) ||
-            _transfer(creep, ['extension', 'spawn']) ||
-            _actionChanger(creep, 'wait')
+        const transporters = creep.room
+            .find(FIND_MY_CREEPS)
+            .filter((creep) => creep.memory.role === 'transporter')
+        if (transporters.length) {
+            _transfer(creep, ['extension', 'spawn']) || _actionChanger(creep, 'wait')
+        } else {
+            _transfer(creep, ['container', 'storage']) ||
+                _transfer(creep, ['tower']) ||
+                _transfer(creep, ['extension', 'spawn']) ||
+                _actionChanger(creep, 'wait')
+        }
     },
     wait: (creep) => {
         creep.moveTo(Game.flags.waitingFlag)
         _interval(() => {
             // _findCloseStorage(creep, ['container', 'storage']) ||
-            _findCloseStorage(creep, ['container', 'storage', 'tower', 'extension', 'spawn']) ||
-                _actionChanger(creep, 'transfer')
-            _actionChangeByCanHarvest(creep)
+            const transporters = creep.room
+                .find(FIND_MY_CREEPS)
+                .filter((creep) => creep.memory.role === 'transporter')
+            if (transporters.length) {
+                _findCloseStorage(creep, ['container', 'storage'])
+                    ? _actionChanger(creep, 'transfer')
+                    : _actionChangeByCanHarvest(creep)
+            } else {
+                _findCloseStorage(creep, ['container', 'storage', 'extension', 'spawn'])
+                    ? _actionChanger(creep, 'transfer')
+                    : _actionChangeByCanHarvest(creep)
+            }
         }, setting.waitCreepIntervalCalcTime)
     },
 }

@@ -15,6 +15,7 @@ const upgraderActions = {
     upgrade: (creep) => {
         creep.store[RESOURCE_ENERGY] === 0 && _actionChanger(creep, 'harvest')
 
+        creep.memory.target = creep.room.controller.id
         creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE &&
             creep.moveTo(creep.room.controller)
     },

@@ -16,8 +16,10 @@ const builderActions = {
         creep.store[RESOURCE_ENERGY] === 0 && _actionChanger(creep, 'harvest')
 
         const target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES)
-        if (target) creep.build(target) == ERR_NOT_IN_RANGE && creep.moveTo(target)
-        else _actionChanger(creep, 'wait')
+        if (target) {
+            creep.memory.target = target.id
+            creep.build(target) == ERR_NOT_IN_RANGE && creep.moveTo(target)
+        } else _actionChanger(creep, 'wait')
     },
     wait: (creep) => {
         creep.moveTo(Game.flags.waitingFlag)

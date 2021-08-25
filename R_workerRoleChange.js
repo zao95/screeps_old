@@ -4,12 +4,30 @@ const workerRoleChange = () => {
     for (let room of Object.keys(Memory.rooms)) {
         // 가중치 계산
         const hasConstructionSite = Game.rooms[room].find(FIND_CONSTRUCTION_SITES).length
-        const hasStorage = Game.rooms[room].find(FIND_STRUCTURES, {
-            filter: (obj) =>
-                ['container', 'storage', 'extension', 'spawn', 'tower'].includes(
-                    obj.structureType
-                ) && obj.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
-        })
+        let hasStorage
+        const transporters = Game.rooms[room]
+            .find(FIND_MY_CREEPS)
+            .filter((creep) => creep.memory.role === 'transporter')
+
+        if (transporters.length)
+            hasStorage = Game.rooms[room].find(FIND_STRUCTURES, {
+                filter: (obj) =>
+                    ['container', 'storage'].includes(obj.structureType) &&
+                    obj.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
+            })
+        else
+            hasStorage =
+                Game.rooms[room].find(FIND_STRUCTURES, {
+                    filter: (obj) =>
+                        ['container', 'storage', 'extension', 'spawn'].includes(
+                            obj.structureType
+                        ) && obj.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
+                }) ||
+                Game.rooms[room].find(FIND_STRUCTURES, {
+                    filter: (obj) =>
+                        ['tower'].includes(obj.structureType) &&
+                        obj.store.getFreeCapacity(RESOURCE_ENERGY) > 500,
+                })
 
         // 변수 선언
         const roles = {}
