@@ -42,7 +42,7 @@ const workerActions = {
     wait: (creep) => {
         creep.moveTo(Game.flags.waitingFlag)
         _interval(() => {
-            if (creep.store.getCapacity() != 0) {
+            if (creep.store.getUsedCapacity() != 0) {
                 const transporters = creep.room
                     .find(FIND_MY_CREEPS)
                     .filter((creep) => creep.memory.role === 'transporter')

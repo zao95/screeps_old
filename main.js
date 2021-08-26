@@ -15,11 +15,7 @@ module.exports.loop = () => {
     _interval(_dashBoard, 20)
 }
 
-// const creep = Object.values(Game.creeps)[0]
-// const a = Object.values(Memory.rooms[creep.room.name].sources)
-//     .filter((source) => source._energy)
-//     .filter((source) => source.targets - source.availableHarvest < 0)
-//     .sort((a, b) => creep.pos.getRangeTo(a) - creep.pos.getRangeTo(b))
+// const a = Object.values(Game.creeps)[4].store
 // console.log(JSON.stringify(a))
 
 // 스폰 크립
