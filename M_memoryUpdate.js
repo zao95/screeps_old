@@ -18,6 +18,11 @@ const memoryUpdate = () => {
             Memory.rooms[room.name].role[role] = count
         }
 
+        // Remember creep's Room
+        for (let creep of Object.values(Game.creeps)) {
+            creep.memory.room = creep.room.name
+        }
+
         // Sources
         for (let source of Object.values(sources)) {
             const availableHarvest = room

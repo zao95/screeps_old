@@ -1,7 +1,9 @@
 const setting = require('./setting')
 
+const _doNotAnything = () => true
+
 const _alertMessage = (message) => {
-    console.log(`! ${message}`)
+    console.log(`!! Error 발생\n${message}`)
 }
 const _infoMessage = (message) => {
     console.log(`${message}`)
@@ -170,6 +172,7 @@ const _transfer = (creep, targetTypes) => {
 }
 
 module.exports = {
+    _doNotAnything: _doNotAnything,
     _alertMessage: _alertMessage,
     _infoMessage: _infoMessage,
     _roleChanger: _roleChanger,

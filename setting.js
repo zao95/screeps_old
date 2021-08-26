@@ -5,23 +5,22 @@ const setting = {
             role: 'worker',
             ratio: 5,
             defaultAction: 'harvest',
-            actions: ['harvest', 'transfer', 'wait'],
+            actions: ['harvest', 'pickup', 'transfer', 'wait'],
         },
         upgrader: {
             role: 'upgrader',
             ratio: 1,
             defaultAction: 'harvest',
-            actions: ['harvest', 'upgrade', 'wait'],
+            actions: ['harvest', 'pickup', 'upgrade', 'wait'],
         },
         builder: {
             role: 'builder',
             ratio: 2,
             defaultAction: 'harvest',
-            actions: ['harvest', 'build', 'wait'],
+            actions: ['harvest', 'pickup', 'build', 'wait'],
         },
     },
     waitCreepIntervalCalcTime: 3,
-    actions: ['harvest', 'upgrade', 'build', 'transfer', 'wait'],
 }
 
 module.exports = setting
