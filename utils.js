@@ -7,8 +7,22 @@ const _infoMessage = (message) => {
     console.log(`${message}`)
 }
 
+const emoji = (string) => {
+    let newString = string
+    if (string === 'harvest') newString += '⛏'
+    else if (string === 'repair') newString += '🔧'
+    else if (string === 'upgrade') newString += '⚙'
+    else if (string === 'transfer') newString += '👞'
+    else if (string === 'wait') newString += '💤'
+    else if (string === 'worker') newString += '⛑'
+    else if (string === 'upgrader') newString += '🎓'
+    else if (string === 'builder') newString += '⚒'
+    return newString
+}
+
 const _roleChanger = (creep, role) => {
-    if (!(role in setting.roles)) {
+    if (creep.memory.role === role) return false
+    else if (!(role in setting.roles)) {
         _alertMessage(
             `정의되지 않은 role로 변경을 시도했습니다.\nAllowed role: ${Object.keys(
                 setting.roles
@@ -17,6 +31,7 @@ const _roleChanger = (creep, role) => {
         return false
     } else if (creep.memory) {
         creep.memory.role = role
+        creep.say(`${emoji(role)}`)
         return true
     }
     _alertMessage(`\n크립의 메모리가 없습니다.\ncreep: ${JSON.stringify(creep)}`)
@@ -24,7 +39,8 @@ const _roleChanger = (creep, role) => {
 }
 
 const _actionChanger = (creep, action) => {
-    if (!setting.roles[creep.memory.role].actions.includes(action)) {
+    if (creep.memory.action === action) return false
+    else if (!setting.roles[creep.memory.role].actions.includes(action)) {
         _alertMessage(
             `정의되지 않은 action으로 변경을 시도했습니다.\nAllowed action: ${
                 setting.roles[creep.memory.role].actions
@@ -33,6 +49,7 @@ const _actionChanger = (creep, action) => {
         return false
     } else if (creep.memory) {
         creep.memory.action = action
+        creep.say(`${emoji(action)}`)
         return true
     }
     _alertMessage(`\n크립의 메모리가 없습니다.\ncreep: ${JSON.stringify(creep)}`)
