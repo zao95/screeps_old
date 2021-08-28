@@ -72,7 +72,7 @@ const _maxWorkerCreeps = (room) => {
         room.energyCapacityAvailable > 700
             ? Math.ceil(
                   availableHarvest *
-                      (room.energyCapacityAvailable / room.energyCapacityAvailable ** 1.07)
+                      (room.energyCapacityAvailable / room.energyCapacityAvailable ** 1.08)
               )
             : 30,
         room.find(FIND_SOURCES).length * 2
