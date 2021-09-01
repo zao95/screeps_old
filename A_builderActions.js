@@ -12,7 +12,7 @@ const builderActions = {
     },
     pickup: (creep) => {
         // Action change
-        creep.store.getFreeCapacity() === 0 && _actionChanger(creep, 'upgrade')
+        creep.store.getFreeCapacity() === 0 && _actionChanger(creep, 'build')
 
         actions.pickup(creep)
     },

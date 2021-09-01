@@ -18,7 +18,7 @@ const workerActions = {
     },
     pickup: (creep) => {
         // Action change
-        creep.store.getFreeCapacity() === 0 && _actionChanger(creep, 'upgrade')
+        creep.store.getFreeCapacity() === 0 && _actionChanger(creep, 'transfer')
 
         actions.pickup(creep)
     },
@@ -35,11 +35,11 @@ const workerActions = {
             .find(FIND_MY_CREEPS)
             .filter((creep) => creep.memory.role === 'transporter')
         if (transporters.length) {
-            _transfer(creep, ['extension', 'spawn']) || _actionChanger(creep, 'wait')
+            _transfer(creep, ['container', 'storage']) || _actionChanger(creep, 'wait')
         } else {
-            _transfer(creep, ['container', 'storage']) ||
-                _transfer(creep, ['tower']) ||
+            _transfer(creep, ['tower']) ||
                 _transfer(creep, ['extension', 'spawn']) ||
+                _transfer(creep, ['container', 'storage']) ||
                 _actionChanger(creep, 'wait')
         }
     },
