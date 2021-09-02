@@ -71,8 +71,8 @@ const _maxWorkerCreeps = (room) => {
     const maxWorkerCreeps = Math.max(
         room.energyCapacityAvailable > 700
             ? Math.ceil(
-                  (availableHarvest + 1) *
-                      (room.energyCapacityAvailable / room.energyCapacityAvailable ** 1.12)
+                  (availableHarvest + 2) *
+                      (room.energyCapacityAvailable / room.energyCapacityAvailable ** 1.1)
               )
             : 20,
         room.find(FIND_SOURCES).length * 2
@@ -100,7 +100,11 @@ const _findCloseSource = (creep) => {
     const sources = Object.values(Memory.rooms[creep.room.name].sources)
         .filter((source) => source._energy)
         .filter((source) => source.targets - source.availableHarvest < 0)
-        .sort((a, b) => creep.pos.getRangeTo(a) - creep.pos.getRangeTo(b))
+        .sort((a, b) => {
+            if (a._energy === 3000) return -1
+            else if (b._energy === 3000) return 1
+            else b._energy - a._energy
+        })
     return sources
 }
 
