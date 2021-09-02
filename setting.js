@@ -23,7 +23,7 @@ const setting = {
     waitCreepIntervalCalcTime: 3,
     minimumFreeCapacity: {
         tower: 500,
-        storage: 100000,
+        storage: 700000,
         extension: 0,
         spawn: 0,
         container: 0,

@@ -10,37 +10,46 @@ const actions = require('./A_commonActions')
 
 const workerActions = {
     harvest: (creep) => {
-        // Action change
-        creep.store.getFreeCapacity() === 0 && _actionChanger(creep, 'transfer')
-
-        // Action
-        actions.harvest(creep)
+        if (creep.store.getFreeCapacity() === 0) {
+            // Action change
+            _actionChanger(creep, 'transfer')
+        } else {
+            // Action
+            actions.harvest(creep)
+        }
     },
     pickup: (creep) => {
-        // Action change
-        creep.store.getFreeCapacity() === 0 && _actionChanger(creep, 'transfer')
-
-        actions.pickup(creep)
+        if (creep.store.getFreeCapacity() === 0) {
+            // Action change
+            _actionChanger(creep, 'transfer')
+        } else {
+            // Action
+            actions.pickup(creep)
+        }
     },
     transfer: (creep) => {
-        creep.store[RESOURCE_ENERGY] === 0 && _actionChanger(creep, 'harvest')
-
-        const cachedTarget = creep.room
-            .find(FIND_STRUCTURES)
-            .find((structure) => structure.id === creep.memory.target)
-        if (cachedTarget != undefined)
-            if (creep.transfer(cachedTarget) == ERR_NOT_IN_RANGE) creep.moveTo(cachedTarget)
-
-        const transporters = creep.room
-            .find(FIND_MY_CREEPS)
-            .filter((creep) => creep.memory.role === 'transporter')
-        if (transporters.length) {
-            _transfer(creep, ['container', 'storage']) || _actionChanger(creep, 'wait')
+        if (creep.store[RESOURCE_ENERGY] === 0) {
+            // Action change
+            _actionChanger(creep, 'harvest')
         } else {
-            _transfer(creep, ['tower']) ||
-                _transfer(creep, ['extension', 'spawn']) ||
-                _transfer(creep, ['container', 'storage']) ||
-                _actionChanger(creep, 'wait')
+            // Action
+            const cachedTarget = creep.room
+                .find(FIND_STRUCTURES)
+                .find((structure) => structure.id === creep.memory.target)
+            if (cachedTarget != undefined)
+                if (creep.transfer(cachedTarget) == ERR_NOT_IN_RANGE) creep.moveTo(cachedTarget)
+
+            const transporters = creep.room
+                .find(FIND_MY_CREEPS)
+                .filter((creep) => creep.memory.role === 'transporter')
+            if (transporters.length) {
+                _transfer(creep, ['container', 'storage']) || _actionChanger(creep, 'wait')
+            } else {
+                _transfer(creep, ['tower']) ||
+                    _transfer(creep, ['extension', 'spawn']) ||
+                    _transfer(creep, ['container', 'storage']) ||
+                    _actionChanger(creep, 'wait')
+            }
         }
     },
     wait: (creep) => {

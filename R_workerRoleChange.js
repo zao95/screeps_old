@@ -11,23 +11,20 @@ const workerRoleChange = () => {
 
         if (transporters.length)
             hasStorage = Game.rooms[room].find(FIND_STRUCTURES, {
-                filter: (obj) =>
-                    ['container', 'storage'].includes(obj.structureType) &&
-                    obj.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
+                filter: (structure) =>
+                    ['container', 'storage'].includes(structure.structureType) &&
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) >
+                        setting.minimumFreeCapacity[structure.structureType],
             })
         else
-            hasStorage =
-                Game.rooms[room].find(FIND_STRUCTURES, {
-                    filter: (obj) =>
-                        ['container', 'storage', 'extension', 'spawn'].includes(
-                            obj.structureType
-                        ) && obj.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
-                }) ||
-                Game.rooms[room].find(FIND_STRUCTURES, {
-                    filter: (obj) =>
-                        ['tower'].includes(obj.structureType) &&
-                        obj.store.getFreeCapacity(RESOURCE_ENERGY) > 500,
-                })
+            hasStorage = Game.rooms[room].find(FIND_STRUCTURES, {
+                filter: (structure) =>
+                    ['container', 'storage', 'extension', 'spawn', 'tower'].includes(
+                        structure.structureType
+                    ) &&
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) >
+                        setting.minimumFreeCapacity[structure.structureType],
+            })
 
         // 변수 선언
         const roles = {}
