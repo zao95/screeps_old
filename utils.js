@@ -115,11 +115,11 @@ const _actionChangeByCanHarvest = (creep) => {
 }
 
 const _findCloseStorage = (creep, targetTypes) => {
-    let minimumFreeCapacity = targetTypes.includes('tower') ? 500 : 0
     let target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: (obj) =>
-            targetTypes.includes(obj.structureType) &&
-            obj.store.getFreeCapacity(RESOURCE_ENERGY) > minimumFreeCapacity,
+        filter: (structure) =>
+            targetTypes.includes(structure.structureType) &&
+            structure.store.getFreeCapacity(RESOURCE_ENERGY) >
+                setting.minimumFreeCapacity[structure.structureType],
     })
     return target
 }
