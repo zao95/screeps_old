@@ -10,6 +10,11 @@ const memoryUpdate = () => {
         if (Memory.rooms[room.name].role === undefined) Memory.rooms[room.name].role = {}
         if (Memory.rooms[room.name].sources === undefined) Memory.rooms[room.name].sources = {}
 
+        // Renew waiting
+        Memory.rooms[room.name].renewWaiting = Object.values(Game.creeps).filter(
+            (creep) => creep.memory.action === 'renew'
+        ).length
+
         // Roles
         for (let { role } of Object.values(setting.roles)) {
             const count = Object.values(Game.creeps).filter(

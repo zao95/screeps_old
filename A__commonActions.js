@@ -47,6 +47,14 @@ const actions = {
         if (checkPicking(creep)) return true
         else return false
     },
+    renew: (creep) => {
+        if (creep.ticksToLive >= 110) return true
+        else {
+            const target = Game.getObjectById(creep.memory.target)
+            creep.move(target)
+            return false
+        }
+    },
 }
 
 const checkPicking = (creep) => {

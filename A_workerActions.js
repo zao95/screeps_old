@@ -6,9 +6,13 @@ const {
     _transfer,
 } = require('./utils')
 const setting = require('./setting')
-const actions = require('./A_commonActions')
+const actions = require('./A__commonActions')
+const actionChanger = require('./A__actionChanger')
 
 const workerActions = {
+    common: (creep) => {
+        if (creep.ticksToLive < 100 && creep.memory.action != 'renew') actionChanger.renew(creep)
+    },
     harvest: (creep) => {
         if (creep.store.getFreeCapacity() === 0) {
             // Action change
@@ -74,6 +78,12 @@ const workerActions = {
                 }
             }, setting.waitCreepIntervalCalcTime)
         }
+    },
+    renew: (creep) => {
+        // Action
+        if (actions.renew(creep))
+            // Action change
+            _actionChanger(creep, 'harvest')
     },
 }
 

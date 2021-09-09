@@ -17,7 +17,11 @@ const creepControl = () => {
         if (!(creep.memory.role in setting.roles)) _roleChanger(creep, setting.defaultRole)
         if (!setting.roles[creep.memory.role].actions.includes(creep.memory.action))
             _actionChanger(creep, setting.roles[creep.memory.role].defaultAction)
-        else creepActions[creep.memory.role][creep.memory.action](creep)
+        else {
+            if (creepActions[creep.memory.role].common)
+                creepActions[creep.memory.role].common(creep)
+            creepActions[creep.memory.role][creep.memory.action](creep)
+        }
     }
 }
 

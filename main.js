@@ -15,7 +15,7 @@ module.exports.loop = () => {
     _interval(_dashBoard, 20)
 }
 
-// const a = Object.values(Game.sources)
+// const a = Object.values(Game.creeps)[0].ticksToLive
 // console.log(JSON.stringify(a))
 
 // 스폰 크립

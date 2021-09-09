@@ -15,6 +15,14 @@ const spawnWorker = (spawn, energy) => {
 
 const spawnControl = () => {
     for (let spawn of Object.values(Game.spawns)) {
+        // renew
+        if (spawn.pos.findInRange(FIND_MY_CREEPS, 1))
+            spawn.renewCreep(
+                spawn.pos.findClosestByRange(FIND_MY_CREEPS, {
+                    filter: (creep) => creep.ticksToLive < 100,
+                })
+            )
+
         const creepCount = Memory.creeps ? Object.keys(Memory.creeps).length : 0
         const maxWorkerCreeps = _maxWorkerCreeps(spawn.room)
         if (

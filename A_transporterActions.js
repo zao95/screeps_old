@@ -8,6 +8,9 @@ const {
 } = require('./utils')
 
 const transporterActions = {
+    common: (creep) => {
+        if (creep.ticksToLive < 100 && creep.memory.action != 'renew') actionChanger.renew(creep)
+    },
     withdraw: (creep) => {
         creep.store.getFreeCapacity() === 0 && _actionChanger(creep, 'transfer')
 
@@ -36,6 +39,12 @@ const transporterActions = {
             _findCloseStorage(creep) && _actionChanger(creep, 'transfer')
             _actionChangeByCanHarvest(creep)
         }, 10)
+    },
+    renew: (creep) => {
+        // Action
+        if (actions.renew(creep))
+            // Action change
+            _actionChanger(creep, 'harvest')
     },
 }
 
