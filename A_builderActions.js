@@ -1,6 +1,7 @@
 const { _interval, _actionChangeByCanHarvest, _actionChanger } = require('./utils')
 const setting = require('./setting')
 const actions = require('./A__commonActions')
+const actionChanger = require('./A__actionChanger')
 
 const builderActions = {
     common: (creep) => {
