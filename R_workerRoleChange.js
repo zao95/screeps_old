@@ -3,7 +3,9 @@ const setting = require('./setting')
 const workerRoleChange = () => {
     for (let room of Object.keys(Memory.rooms)) {
         // 가중치 계산
-        const hasConstructionSite = Game.rooms[room].find(FIND_CONSTRUCTION_SITES).length
+        const hasConstructionSite = !!Game.rooms[room]
+            ? Game.rooms[room].find(FIND_CONSTRUCTION_SITES).length
+            : 0
         let hasStorage
         const transporters = Game.rooms[room]
             .find(FIND_MY_CREEPS)

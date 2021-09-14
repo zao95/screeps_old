@@ -89,7 +89,7 @@ const _dashBoard = () => {
         })
         message += `\n[${room} 현황]`
         message += `\nEnergy: \t${Game.rooms[room].energyAvailable} / ${Game.rooms[room].energyCapacityAvailable}`
-        message += `\nCreeps: \t${creeps.length} / ${_maxWorkerCreeps(Game.rooms[room])}`
+        message += `\nWorkers: \t${creeps.length} / ${_maxWorkerCreeps(Game.rooms[room])}`
         message += `\nRole 배분: \t${JSON.stringify(Memory.rooms[room].role)}`
     }
     message += '\n====================\n'

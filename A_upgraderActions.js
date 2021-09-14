@@ -29,7 +29,11 @@ const upgraderActions = {
     },
     wait: (creep) => {
         if (!actions.wait(creep)) {
-            creep.moveTo(Game.flags.waitingFlag)
+            creep.moveTo(
+                creep.room.find(FIND_FLAGS, {
+                    filter: (flag) => flag.color === 10,
+                })
+            )
             _interval(() => _actionChangeByCanHarvest(creep), setting.waitCreepIntervalCalcTime)
         }
     },

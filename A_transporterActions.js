@@ -34,7 +34,11 @@ const transporterActions = {
         else _actionChanger(creep, 'wait')
     },
     wait: (creep) => {
-        creep.moveTo(Game.flags.waitingFlag)
+        creep.moveTo(
+            creep.room.find(FIND_FLAGS, {
+                filter: (flag) => flag.color === 10,
+            })
+        )
         _interval(() => {
             _findCloseStorage(creep) && _actionChanger(creep, 'transfer')
             _actionChangeByCanHarvest(creep)

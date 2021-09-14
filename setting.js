@@ -3,7 +3,7 @@ const setting = {
     roles: {
         worker: {
             role: 'worker',
-            ratio: 3,
+            ratio: 5,
             defaultAction: 'harvest',
             actions: ['harvest', 'pickup', 'transfer', 'wait', 'renew'],
         },

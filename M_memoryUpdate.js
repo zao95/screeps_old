@@ -4,6 +4,8 @@ const memoryUpdate = () => {
     if (Memory.rooms === undefined) Memory.rooms = {}
 
     for (let room of Object.values(Game.rooms)) {
+        if (!room.energyCapacityAvailable) continue
+
         const sources = Game.rooms[room.name].find(FIND_SOURCES)
 
         if (Memory.rooms[room.name] === undefined) Memory.rooms[room.name] = {}
@@ -18,7 +20,7 @@ const memoryUpdate = () => {
         // Roles
         for (let { role } of Object.values(setting.roles)) {
             const count = Object.values(Game.creeps).filter(
-                (creep) => creep.memory.role === role
+                (creep) => creep.memory.role === role && creep.pos.roomName === room.name
             ).length
             Memory.rooms[room.name].role[role] = count
         }
