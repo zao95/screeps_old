@@ -14,7 +14,7 @@ module.exports.loop = () => {
     towerControl()
     _garbageCollecter()
     _interval(_dashBoard, 10)
-    invade('W7N3')
+    // invade('W7N3')
 }
 
 // const a = Object.values(Game.creeps)[0].ticksToLive

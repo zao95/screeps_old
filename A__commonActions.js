@@ -51,8 +51,8 @@ const actions = {
         if (creep.ticksToLive >= 110) return true
         else {
             const target = Game.getObjectById(creep.memory.target)
-            creep.move(target)
-            return false
+            if (target) creep.move(target)
+            else return false
         }
     },
 }

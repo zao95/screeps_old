@@ -4,7 +4,7 @@ const actionChanger = {
     renew: (creep) => {
         const target = creep.pos.findClosestByPath(FIND_MY_SPAWNS)
         if (target) {
-            creep.memory.target = target
+            creep.memory.target = target.id
             _actionChanger(creep, 'renew')
             return true
         } else {

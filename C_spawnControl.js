@@ -23,7 +23,11 @@ const spawnControl = () => {
                 })
             )
 
-        const creepCount = Memory.creeps ? Object.keys(Memory.creeps).length : 0
+        const creepCount = Memory.creeps
+            ? Object.values(Memory.creeps).filter(
+                  (creepMemory) => creepMemory.room === spawn.room.name
+              ).length
+            : 0
         const maxWorkerCreeps = _maxWorkerCreeps(spawn.room)
         if (
             spawn.room.energyAvailable === spawn.room.energyCapacityAvailable &&
