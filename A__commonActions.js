@@ -13,7 +13,7 @@ const actions = {
 
         // Action
         if (error === OK)
-            creep.say(`${creep.store.getUsedCapacity()} / ${creep.store.getCapacity()}`)
+            creep.say(`${creep.store.getUsedCapacity()} / ${creep.store.getCapacity()}`, true)
         else if (error === ERR_NOT_IN_RANGE) creep.moveTo(target)
         else if (
             error === ERR_NOT_FOUND ||
@@ -34,7 +34,7 @@ const actions = {
 
         // Action
         if (error === OK)
-            creep.say(`${creep.store.getUsedCapacity()} / ${creep.store.getCapacity()}`)
+            creep.say(`${creep.store.getUsedCapacity()} / ${creep.store.getCapacity()}`, true)
         else if (error === ERR_NOT_IN_RANGE) creep.moveTo(target)
         else if (error === ERR_INVALID_TARGET) _actionChanger(creep, 'wait')
         else if (error === ERR_BUSY) _doNotAnything()

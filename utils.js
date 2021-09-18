@@ -33,7 +33,7 @@ const _roleChanger = (creep, role) => {
         return false
     } else if (creep.memory) {
         creep.memory.role = role
-        creep.say(`${emoji(role)}`)
+        creep.say(`${emoji(role)}`, true)
         return true
     }
     _alertMessage(`\n크립의 메모리가 없습니다.\ncreep: ${JSON.stringify(creep)}`)
@@ -51,7 +51,7 @@ const _actionChanger = (creep, action) => {
         return false
     } else if (creep.memory) {
         creep.memory.action = action
-        creep.say(`${emoji(action)}`)
+        creep.say(`${emoji(action)}`, true)
         return true
     }
     _alertMessage(`\n크립의 메모리가 없습니다.\ncreep: ${JSON.stringify(creep)}`)
