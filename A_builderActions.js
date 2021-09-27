@@ -31,11 +31,12 @@ const builderActions = {
     },
     wait: (creep) => {
         if (!actions.wait(creep)) {
-            creep.moveTo(
-                creep.room.find(FIND_FLAGS, {
-                    filter: (flag) => flag.color === 10,
-                })
-            )
+            const waitingFlag = creep.pos.findClosestByPath(FIND_FLAGS, {
+                filter: (flag) => {
+                    return flag.color === 10
+                },
+            })
+            creep.moveTo(waitingFlag)
             _interval(() => _actionChangeByCanHarvest(creep), setting.waitCreepIntervalCalcTime)
         }
     },

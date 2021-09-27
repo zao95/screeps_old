@@ -57,12 +57,20 @@ const workerActions = {
         }
     },
     wait: (creep) => {
+        // const waitingFlag = creep.room.find(FIND_FLAGS, {
+        //     filter: (flag) => {
+        //         console.log(flag.pos)
+        //         return flag.color === 10
+        //     },
+        // })
+        // console.log(creep.name, JSON.stringify(waitingFlag))
         if (!actions.wait(creep)) {
-            creep.moveTo(
-                creep.room.find(FIND_FLAGS, {
-                    filter: (flag) => flag.color === 10,
-                })
-            )
+            const waitingFlag = creep.pos.findClosestByPath(FIND_FLAGS, {
+                filter: (flag) => {
+                    return flag.color === 10
+                },
+            })
+            creep.moveTo(waitingFlag)
             _interval(() => {
                 if (creep.store.getUsedCapacity() != 0) {
                     const transporters = creep.room
