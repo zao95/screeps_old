@@ -28,16 +28,10 @@ const spawnControl = () => {
             )
         }
 
-        const creepCount = Memory.creeps
-            ? Object.values(Memory.creeps).filter(
-                  (creepMemory) => creepMemory.room === spawn.room.name
-              ).length
-            : 0
-        const maxWorkerCreeps = _maxWorkerCreeps(spawn.room)
         // 일반적인 worker Spawn
         if (
             spawn.room.energyAvailable >= Math.min(spawn.room.energyCapacityAvailable, 3350) &&
-            creepCount < maxWorkerCreeps
+            Memory.rooms[spawn.room.name].workerCount < Memory.rooms[spawn.room.name].workerMaxCount
         ) {
             spawnWorker(spawn, spawn.room.energyCapacityAvailable)
         }
