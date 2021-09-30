@@ -7,11 +7,10 @@ const {
 } = require('./utils')
 const setting = require('./setting')
 const actions = require('./A__commonActions')
-const actionChanger = require('./A__actionChanger')
 
 const workerActions = {
     common: (creep) => {
-        if (creep.ticksToLive < 100 && creep.memory.action != 'renew') actionChanger.renew(creep)
+        actions.common(creep)
     },
     harvest: (creep) => {
         if (creep.store.getFreeCapacity() === 0) {
@@ -49,8 +48,8 @@ const workerActions = {
             if (transporters.length) {
                 _transfer(creep, ['container', 'storage']) || _actionChanger(creep, 'wait')
             } else {
-                _transfer(creep, ['tower']) ||
-                    _transfer(creep, ['extension', 'spawn']) ||
+                _transfer(creep, ['extension', 'spawn']) ||
+                    _transfer(creep, ['tower']) ||
                     _transfer(creep, ['container', 'storage']) ||
                     _actionChanger(creep, 'wait')
             }

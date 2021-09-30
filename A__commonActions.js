@@ -4,8 +4,21 @@ const {
     _alertMessage,
     _actionChanger,
 } = require('./utils')
+const actionChanger = require('./A__actionChanger')
 
 const actions = {
+    common: (creep) => {
+        if (
+            creep.ticksToLive < 100 &&
+            creep.memory.action != 'renew' &&
+            creep.room.energyAvailable === creep.room.energyCapacityAvailable &&
+            !Object.values(Memory.creeps).filter(
+                (creepMemory) =>
+                    creepMemory.room === creep.memory.room && creepMemory.action === 'renew'
+            ).length
+        )
+            actionChanger.renew(creep)
+    },
     harvest: (creep) => {
         // 변수 선언
         const target = Game.getObjectById(creep.memory.target)
@@ -48,11 +61,22 @@ const actions = {
         else return false
     },
     renew: (creep) => {
-        if (creep.ticksToLive >= 110) return true
+        if (
+            creep.ticksToLive > 1490 ||
+            Memory.rooms[creep.room.name].workerCount !=
+                Memory.rooms[creep.room.name].workerMaxCount
+        )
+            return true
         else {
             const target = Game.getObjectById(creep.memory.target)
-            if (target) creep.moveTo(target)
-            else return false
+            if (target) {
+                if (creep.pos.findInRange([target], 1)) {
+                    const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
+                    creep.transfer(spawn, RESOURCE_ENERGY)
+                } else {
+                    creep.moveTo(target)
+                }
+            } else return false
         }
     },
 }

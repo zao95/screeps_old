@@ -84,12 +84,9 @@ const _dashBoard = () => {
     let message = ''
     message += '===================='
     for (let room in Memory.rooms) {
-        const creeps = Game.rooms[room].find(FIND_MY_CREEPS, {
-            filter: (creep) => creep.name.startsWith('Worker'),
-        })
         message += `\n[${room} 현황]`
         message += `\nEnergy: \t${Game.rooms[room].energyAvailable} / ${Game.rooms[room].energyCapacityAvailable}`
-        message += `\nWorkers: \t${creeps.length} / ${_maxWorkerCreeps(Game.rooms[room])}`
+        message += `\nWorkers: \t${Memory.rooms[room].workerCount} / ${Memory.rooms[room].workerMaxCount}`
         message += `\nRole 배분: \t${JSON.stringify(Memory.rooms[room].role)}`
     }
     message += '\n====================\n'

@@ -1,4 +1,51 @@
 const setting = require('./setting')
+const { _maxWorkerCreeps } = require('./utils')
+
+const saveRoleCounts = (room) => {
+    for (let { role } of Object.values(setting.roles)) {
+        const count = Object.values(Game.creeps).filter(
+            (creep) => creep.memory.role === role && creep.pos.roomName === room.name
+        ).length
+        Memory.rooms[room.name].role[role] = count
+    }
+}
+
+const saveCreepRoomName = (room) => {
+    for (let creep of Object.values(Game.creeps)) {
+        creep.memory.room = creep.room.name
+    }
+}
+
+const saveSourceData = (room) => {
+    for (let source of Object.values(sources)) {
+        const availableHarvest = room
+            .lookAtArea(
+                source.pos.y - 1,
+                source.pos.x - 1,
+                source.pos.y + 1,
+                source.pos.x + 1,
+                true
+            )
+            .filter((object) => object.type === 'terrain' && object.terrain != 'wall').length
+        const targets = Memory.creeps
+            ? Object.values(Memory.creeps).filter((creep) => creep.target === source.id).length
+            : 0
+
+        Memory.rooms[room.name].sources[source.id] = {
+            ...source,
+            availableHarvest,
+            targets,
+        }
+    }
+}
+
+const saveWorkerCount = (room) => {
+    const creeps = Game.rooms[room.name].find(FIND_MY_CREEPS, {
+        filter: (creep) => creep.name.startsWith('Worker'),
+    })
+    Memory.rooms[room.name].workerCount = creeps.length
+    Memory.rooms[room.name].workerMaxCount = _maxWorkerCreeps(Game.rooms[room.name])
+}
 
 const memoryUpdate = () => {
     if (Memory.rooms === undefined) Memory.rooms = {}
@@ -12,45 +59,10 @@ const memoryUpdate = () => {
         if (Memory.rooms[room.name].role === undefined) Memory.rooms[room.name].role = {}
         if (Memory.rooms[room.name].sources === undefined) Memory.rooms[room.name].sources = {}
 
-        // Renew waiting
-        Memory.rooms[room.name].renewWaiting = Object.values(Game.creeps).filter(
-            (creep) => creep.memory.action === 'renew'
-        ).length
-
-        // Roles
-        for (let { role } of Object.values(setting.roles)) {
-            const count = Object.values(Game.creeps).filter(
-                (creep) => creep.memory.role === role && creep.pos.roomName === room.name
-            ).length
-            Memory.rooms[room.name].role[role] = count
-        }
-
-        // Remember creep's Room
-        for (let creep of Object.values(Game.creeps)) {
-            creep.memory.room = creep.room.name
-        }
-
-        // Sources
-        for (let source of Object.values(sources)) {
-            const availableHarvest = room
-                .lookAtArea(
-                    source.pos.y - 1,
-                    source.pos.x - 1,
-                    source.pos.y + 1,
-                    source.pos.x + 1,
-                    true
-                )
-                .filter((object) => object.type === 'terrain' && object.terrain != 'wall').length
-            const targets = Memory.creeps
-                ? Object.values(Memory.creeps).filter((creep) => creep.target === source.id).length
-                : 0
-
-            Memory.rooms[room.name].sources[source.id] = {
-                ...source,
-                availableHarvest,
-                targets,
-            }
-        }
+        saveRoleCounts(room)
+        saveCreepRoomName(room)
+        saveSourceData(room)
+        saveWorkerCount(room)
     }
 }
 

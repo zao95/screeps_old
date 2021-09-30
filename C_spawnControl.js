@@ -16,12 +16,17 @@ const spawnWorker = (spawn, energy) => {
 const spawnControl = () => {
     for (let spawn of Object.values(Game.spawns)) {
         // renew
-        if (spawn.pos.findInRange(FIND_MY_CREEPS, 1))
+        if (
+            spawn.pos.findInRange(FIND_MY_CREEPS, 1) &&
+            Memory.rooms[spawn.room.name].workerCount ===
+                Memory.rooms[spawn.room.name].workerMaxCount
+        ) {
             spawn.renewCreep(
                 spawn.pos.findClosestByRange(FIND_MY_CREEPS, {
-                    filter: (creep) => creep.ticksToLive < 100,
+                    filter: (creep) => creep.memory.action === 'renew',
                 })
             )
+        }
 
         const creepCount = Memory.creeps
             ? Object.values(Memory.creeps).filter(
@@ -29,14 +34,18 @@ const spawnControl = () => {
               ).length
             : 0
         const maxWorkerCreeps = _maxWorkerCreeps(spawn.room)
+        // 일반적인 creep Spawn
         if (
             spawn.room.energyAvailable === spawn.room.energyCapacityAvailable &&
             creepCount < maxWorkerCreeps
         ) {
             spawnWorker(spawn, spawn.room.energyCapacityAvailable)
         }
+        // 비상 creep Spawn
         if (spawn.room.find(FIND_MY_CREEPS).length === 0) {
-            spawnWorker(spawn, spawn.room.energyAvailable)
+            if (spawn.room.energyAvailable >= 300) {
+                spawnWorker(spawn, spawn.room.energyAvailable)
+            }
         }
     }
 }

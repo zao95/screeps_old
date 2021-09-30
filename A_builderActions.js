@@ -1,11 +1,10 @@
 const { _interval, _actionChangeByCanHarvest, _actionChanger } = require('./utils')
 const setting = require('./setting')
 const actions = require('./A__commonActions')
-const actionChanger = require('./A__actionChanger')
 
 const builderActions = {
     common: (creep) => {
-        if (creep.ticksToLive < 100 && creep.memory.action != 'renew') actionChanger.renew(creep)
+        actions.common(creep)
     },
     harvest: (creep) => {
         // Action change
