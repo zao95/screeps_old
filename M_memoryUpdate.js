@@ -1,5 +1,5 @@
 const setting = require('./setting')
-const { _maxWorkerCreeps } = require('./utils')
+const { _interval, _maxWorkerCreeps } = require('./utils')
 
 const saveRoleCounts = (room) => {
     for (let { role } of Object.values(setting.roles)) {
@@ -10,13 +10,14 @@ const saveRoleCounts = (room) => {
     }
 }
 
-const saveCreepRoomName = (room) => {
+const saveCreepRoomName = () => {
     for (let creep of Object.values(Game.creeps)) {
         creep.memory.room = creep.room.name
     }
 }
 
 const saveSourceData = (room) => {
+    const sources = Game.rooms[room.name].find(FIND_SOURCES)
     for (let source of Object.values(sources)) {
         const availableHarvest = room
             .lookAtArea(
@@ -53,16 +54,14 @@ const memoryUpdate = () => {
     for (let room of Object.values(Game.rooms)) {
         if (!room.energyCapacityAvailable) continue
 
-        const sources = Game.rooms[room.name].find(FIND_SOURCES)
-
         if (Memory.rooms[room.name] === undefined) Memory.rooms[room.name] = {}
         if (Memory.rooms[room.name].role === undefined) Memory.rooms[room.name].role = {}
         if (Memory.rooms[room.name].sources === undefined) Memory.rooms[room.name].sources = {}
 
-        saveRoleCounts(room)
-        saveCreepRoomName(room)
-        saveSourceData(room)
-        saveWorkerCount(room)
+        _interval(saveRoleCounts, 1, [room])
+        _interval(saveCreepRoomName, 1)
+        _interval(saveSourceData, 1, [room])
+        _interval(saveWorkerCount, 1, [room])
     }
 }
 

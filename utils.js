@@ -58,8 +58,8 @@ const _actionChanger = (creep, action) => {
     return false
 }
 
-const _interval = (func, time) => {
-    Game.time % time === 0 && func()
+const _interval = (func, time, arguments = []) => {
+    Game.time % time === 0 && func(...arguments)
 }
 
 const _maxWorkerCreeps = (room) => {

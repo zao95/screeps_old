@@ -34,9 +34,9 @@ const spawnControl = () => {
               ).length
             : 0
         const maxWorkerCreeps = _maxWorkerCreeps(spawn.room)
-        // 일반적인 creep Spawn
+        // 일반적인 worker Spawn
         if (
-            spawn.room.energyAvailable === spawn.room.energyCapacityAvailable &&
+            spawn.room.energyAvailable >= Math.min(spawn.room.energyCapacityAvailable, 3350) &&
             creepCount < maxWorkerCreeps
         ) {
             spawnWorker(spawn, spawn.room.energyCapacityAvailable)
