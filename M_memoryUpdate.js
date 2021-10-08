@@ -28,15 +28,22 @@ const saveSourceData = (room) => {
                 true
             )
             .filter((object) => object.type === 'terrain' && object.terrain != 'wall').length
-        const targets = Memory.creeps
-            ? Object.values(Memory.creeps).filter((creep) => creep.target === source.id).length
-            : 0
 
         Memory.rooms[room.name].sources[source.id] = {
             ...source,
             availableHarvest,
-            targets,
         }
+    }
+}
+
+const saveTargetedSources = (room) => {
+    const sources = Game.rooms[room.name].find(FIND_SOURCES)
+    for (let source of Object.values(sources)) {
+        const targets = Memory.creeps
+            ? Object.values(Memory.creeps).filter((creep) => creep.target === source.id).length
+            : 0
+
+        Memory.rooms[room.name].sources[source.id].targets = targets
     }
 }
 
@@ -46,6 +53,27 @@ const saveWorkerCount = (room) => {
     })
     Memory.rooms[room.name].workerCount = creeps.length
     Memory.rooms[room.name].workerMaxCount = _maxWorkerCreeps(Game.rooms[room.name])
+}
+
+const saveSpawnState = (room) => {
+    const spawns = Game.rooms[room.name].find(FIND_MY_SPAWNS)
+    Memory.rooms[room.name].spawns === undefined && (Memory.rooms[room.name].spawns = {})
+    for (let spawn of spawns) {
+        Memory.rooms[room.name].spawns[spawn.name] === undefined &&
+            (Memory.rooms[room.name].spawns[spawn.name] = {})
+        Memory.rooms[room.name].spawns[spawn.name].id = spawn.id
+        Memory.rooms[room.name].spawns[spawn.name].name = spawn.name
+        Memory.rooms[room.name].spawns[spawn.name].energy = spawn.energy
+        Memory.rooms[room.name].spawns[spawn.name].energyCapacity = spawn.energyCapacity
+        Memory.rooms[room.name].spawns[spawn.name].spawning = spawn.spawning
+    }
+}
+
+const saveSpawnWorker = (room) => {
+    const spawns = Game.rooms[room.name].find(FIND_MY_SPAWNS, {
+        filter: (spawn) => spawn.spawning && spawn.spawning.name.startsWith('Worker'),
+    })
+    !spawns.length && (Memory.rooms[room.name].spawnWorker = false)
 }
 
 const memoryUpdate = () => {
@@ -61,7 +89,10 @@ const memoryUpdate = () => {
         _interval(saveRoleCounts, 1, [room])
         _interval(saveCreepRoomName, 1)
         _interval(saveSourceData, 1, [room])
+        _interval(saveTargetedSources, 1, [room])
         _interval(saveWorkerCount, 1, [room])
+        _interval(saveSpawnState, 1, [room])
+        _interval(saveSpawnWorker, 1, [room])
     }
 }
 

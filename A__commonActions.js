@@ -9,7 +9,7 @@ const actionChanger = require('./A__actionChanger')
 const actions = {
     common: (creep) => {
         if (
-            creep.ticksToLive < 100 &&
+            creep.ticksToLive < 200 &&
             creep.memory.action != 'renew' &&
             creep.room.energyAvailable === creep.room.energyCapacityAvailable &&
             !Object.values(Memory.creeps).filter(
@@ -70,7 +70,7 @@ const actions = {
         else {
             const target = Game.getObjectById(creep.memory.target)
             if (target) {
-                if (creep.pos.findInRange([target], 1)) {
+                if (creep.pos.findInRange([target], 1).length) {
                     const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
                     creep.transfer(spawn, RESOURCE_ENERGY)
                 } else {

@@ -30,10 +30,13 @@ const spawnControl = () => {
 
         // 일반적인 worker Spawn
         if (
-            spawn.room.energyAvailable >= Math.min(spawn.room.energyCapacityAvailable, 3350) &&
-            Memory.rooms[spawn.room.name].workerCount < Memory.rooms[spawn.room.name].workerMaxCount
+            spawn.room.energyAvailable >= spawn.room.energyCapacityAvailable &&
+            Memory.rooms[spawn.room.name].workerCount <
+                Memory.rooms[spawn.room.name].workerMaxCount &&
+            !Memory.rooms[spawn.room.name].spawnWorker
         ) {
             spawnWorker(spawn, spawn.room.energyCapacityAvailable)
+            Memory.rooms[spawn.room.name].spawnWorker = true
         }
         // 비상 creep Spawn
         if (spawn.room.find(FIND_MY_CREEPS).length === 0) {
