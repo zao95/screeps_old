@@ -83,7 +83,7 @@ const actions = {
 
 const checkPicking = (creep) => {
     const droppedResource = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {
-        filter: (resource) => resource.resourceType === energe,
+        filter: (resource) => resource.resourceType === 'energe',
     })
     if (droppedResource) {
         const isSomeonePickingItUpNow = Object.values(Memory.creeps).find(
