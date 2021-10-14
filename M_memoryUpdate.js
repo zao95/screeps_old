@@ -1,6 +1,26 @@
 const setting = require('./setting')
 const { _interval, _maxWorkerCreeps } = require('./utils')
 
+const memoryUpdate = () => {
+    if (Memory.rooms === undefined) Memory.rooms = {}
+
+    for (let room of Object.values(Game.rooms)) {
+        if (!room.energyCapacityAvailable) continue
+
+        if (Memory.rooms[room.name] === undefined) Memory.rooms[room.name] = {}
+        if (Memory.rooms[room.name].role === undefined) Memory.rooms[room.name].role = {}
+        if (Memory.rooms[room.name].sources === undefined) Memory.rooms[room.name].sources = {}
+
+        _interval(saveRoleCounts, 1, [room])
+        _interval(saveCreepRoomName, 1)
+        _interval(saveSourceData, 1, [room])
+        _interval(saveTargetedSources, 1, [room])
+        _interval(saveWorkerCount, 1, [room])
+        _interval(saveSpawnState, 1, [room])
+        _interval(saveSpawnWorker, 1, [room])
+    }
+}
+
 const saveRoleCounts = (room) => {
     for (let { role } of Object.values(setting.roles)) {
         const count = Object.values(Game.creeps).filter(
@@ -74,26 +94,6 @@ const saveSpawnWorker = (room) => {
         filter: (spawn) => spawn.spawning && spawn.spawning.name.startsWith('Worker'),
     })
     !spawns.length && (Memory.rooms[room.name].spawnWorker = false)
-}
-
-const memoryUpdate = () => {
-    if (Memory.rooms === undefined) Memory.rooms = {}
-
-    for (let room of Object.values(Game.rooms)) {
-        if (!room.energyCapacityAvailable) continue
-
-        if (Memory.rooms[room.name] === undefined) Memory.rooms[room.name] = {}
-        if (Memory.rooms[room.name].role === undefined) Memory.rooms[room.name].role = {}
-        if (Memory.rooms[room.name].sources === undefined) Memory.rooms[room.name].sources = {}
-
-        _interval(saveRoleCounts, 1, [room])
-        _interval(saveCreepRoomName, 1)
-        _interval(saveSourceData, 1, [room])
-        _interval(saveTargetedSources, 1, [room])
-        _interval(saveWorkerCount, 1, [room])
-        _interval(saveSpawnState, 1, [room])
-        _interval(saveSpawnWorker, 1, [room])
-    }
 }
 
 module.exports = memoryUpdate

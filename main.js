@@ -16,7 +16,8 @@ module.exports.loop = () => {
     _garbageCollecter()
     _interval(_dashBoard, 10)
     // invade('W7N4')
-    // attack('W5N1')
+    // buildAssist('')
+    // attack('W5N1', 20, 'W5N2')
 }
 
 // const a = Object.values(Game.creeps)[0].ticksToLive
