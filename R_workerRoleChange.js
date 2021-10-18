@@ -1,7 +1,10 @@
 const setting = require('./setting')
 
 const workerRoleChange = () => {
-    for (let room of Object.keys(Memory.rooms)) {
+    const rooms = Object.values(Memory.rooms)
+        .filter((room) => room.own)
+        .map((room) => room.name)
+    for (let room of rooms) {
         // 가중치 계산
         const hasConstructionSite = !!Game.rooms[room]
             ? Game.rooms[room].find(FIND_CONSTRUCTION_SITES).length

@@ -5,19 +5,26 @@ const memoryUpdate = () => {
     if (Memory.rooms === undefined) Memory.rooms = {}
 
     for (let room of Object.values(Game.rooms)) {
-        if (!room.energyCapacityAvailable) continue
-
+        // 공통 코드
         if (Memory.rooms[room.name] === undefined) Memory.rooms[room.name] = {}
-        if (Memory.rooms[room.name].role === undefined) Memory.rooms[room.name].role = {}
         if (Memory.rooms[room.name].sources === undefined) Memory.rooms[room.name].sources = {}
-
-        _interval(saveRoleCounts, 1, [room])
-        _interval(saveCreepRoomName, 1)
+        Memory.rooms[room.name].name = room.name
         _interval(saveSourceData, 1, [room])
-        _interval(saveTargetedSources, 1, [room])
-        _interval(saveWorkerCount, 1, [room])
-        _interval(saveSpawnState, 1, [room])
-        _interval(saveSpawnWorker, 1, [room])
+
+        // 본진 or 멀티
+        if (room.controller.my) {
+            Memory.rooms[room.name].own = true
+            if (Memory.rooms[room.name].role === undefined) Memory.rooms[room.name].role = {}
+            _interval(saveRoleCounts, 1, [room])
+            // _interval(saveCreepRoomName, 1)
+            _interval(saveTargetedSources, 1, [room])
+            _interval(saveWorkerCount, 1, [room])
+            _interval(saveSpawnState, 1, [room])
+            _interval(saveSpawnWorker, 1, [room])
+        } else {
+            Memory.rooms[room.name].own = false
+            _interval(saveSafeState, 1, [room])
+        }
     }
 }
 
@@ -94,6 +101,19 @@ const saveSpawnWorker = (room) => {
         filter: (spawn) => spawn.spawning && spawn.spawning.name.startsWith('Worker'),
     })
     !spawns.length && (Memory.rooms[room.name].spawnWorker = false)
+}
+
+const saveSafeState = (room) => {
+    const hostileCreeps = Game.rooms[room.name].find(FIND_HOSTILE_CREEPS)
+    const hostilePowerCreeps = Game.rooms[room.name].find(FIND_HOSTILE_POWER_CREEPS)
+    const hostileSpawns = Game.rooms[room.name].find(FIND_HOSTILE_SPAWNS)
+    const hostileStructures = Game.rooms[room.name].find(FIND_HOSTILE_STRUCTURES)
+    const safeState =
+        hostileCreeps.length +
+        hostilePowerCreeps.length * 4 +
+        hostileSpawns.length * 16 +
+        hostileStructures.length * 32
+    Memory.rooms[room.name].safeState = safeState
 }
 
 module.exports = memoryUpdate

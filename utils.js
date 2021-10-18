@@ -84,6 +84,7 @@ const _dashBoard = () => {
     let message = ''
     message += '===================='
     for (let room in Memory.rooms) {
+        if (!Memory.rooms[room].own) continue
         message += `\n[${room} 현황]`
         message += `\nEnergy: \t${Game.rooms[room].energyAvailable} / ${Game.rooms[room].energyCapacityAvailable}`
         message += `\nWorkers: \t${Memory.rooms[room].workerCount} / ${Memory.rooms[room].workerMaxCount}`

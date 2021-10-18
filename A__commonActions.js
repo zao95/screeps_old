@@ -8,16 +8,16 @@ const actionChanger = require('./A__actionChanger')
 
 const actions = {
     common: (creep) => {
-        if (
-            creep.ticksToLive < 200 &&
-            creep.memory.action != 'renew' &&
-            creep.room.energyAvailable === creep.room.energyCapacityAvailable &&
-            !Object.values(Memory.creeps).filter(
-                (creepMemory) =>
-                    creepMemory.room === creep.memory.room && creepMemory.action === 'renew'
-            ).length
-        )
-            actionChanger.renew(creep)
+        // if (
+        //     creep.ticksToLive < 200 &&
+        //     creep.memory.action != 'renew' &&
+        //     creep.room.energyAvailable === creep.room.energyCapacityAvailable &&
+        //     !Object.values(Memory.creeps).filter(
+        //         (creepMemory) =>
+        //             creepMemory.room === creep.memory.room && creepMemory.action === 'renew'
+        //     ).length
+        // )
+        //     actionChanger.renew(creep)
     },
     harvest: (creep) => {
         // 변수 선언

@@ -4,10 +4,12 @@ const creepControl = require('./C_creepControl')
 const towerControl = require('./C_towerControl')
 const workerRoleChange = require('./R_workerRoleChange')
 const memoryUpdate = require('./M_memoryUpdate')
+const constants = require('./constants')
 const invade = require('./U_invade')
 const attack = require('./U_attack')
 
 module.exports.loop = () => {
+    constants()
     _interval(memoryUpdate, 1)
     workerRoleChange()
     spawnControl()

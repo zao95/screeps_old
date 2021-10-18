@@ -9,7 +9,7 @@ const spawnWorker = (spawn, energy) => {
 
     const name = `${defaultName}${maxNaming + 1}`
     const body = _makeBody(energy, 'worker')
-    const memory = { role: 'worker' }
+    const memory = { role: 'worker', room: spawn.room.name }
     spawn.spawnCreep(body, name, { memory })
 }
 
