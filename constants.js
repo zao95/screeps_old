@@ -11,15 +11,15 @@ const addConstants = () => {
     global.MINERAL_CONTAINER_MINER = 'mineralContainerMiner'
     global.MINERAL_TRANSPOTER = 'mineralTranspoter'
     // action
-    global.COMMON = 'worker'
-    global.HARVEST = 'worker'
-    global.WAIT = 'worker'
-    global.PICKUP = 'worker'
-    global.RENEW = 'worker'
-    global.UPGRADE = 'worker'
-    global.WITHDRAW = 'worker'
-    global.TRANSFER = 'worker'
-    global.REPAIR = 'worker'
+    global.COMMON = 'common'
+    global.HARVEST = 'harvest'
+    global.WAIT = 'wait'
+    global.PICKUP = 'pickup'
+    global.RENEW = 'renew'
+    global.UPGRADE = 'upgrade'
+    global.WITHDRAW = 'withdraw'
+    global.TRANSFER = 'transfer'
+    global.REPAIR = 'repair'
 }
 
 module.exports = addConstants
